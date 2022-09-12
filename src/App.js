@@ -1,25 +1,61 @@
-import logo from './logo.svg';
+import React, { useState } from "react";
 import './App.css';
+import ToDoList from './ToDoList';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App = () => {
+  const [getInput, getInputValue] = useState();
+  const [showValue, showItemsValue] = useState([]);
+  const [colorVal,getColor] = useState('#6CB4EE');
+
+  const inputValue = (event) => {
+    getInputValue(event.target.value);
+  }
+  
+  const showItems = () => {
+    if(getInput !== '' && getInput !== undefined){
+      showItemsValue( (preVal) => [...preVal, getInput] );
+      getInputValue('');
+      getColor('#50C878');
+    }
+  }
+
+  const deleteItem = (id) => {
+    showItemsValue( (preVal) => {
+      return preVal.filter( (arr, curr) =>{
+        return curr !== id
+      })
+    })
+    getColor('#fd5c63');
+  }
+
+  return(
+    <>
+      <div className="main_div">
+        <div className="center_div">
+          <br />
+          <h1 style={{ backgroundColor : colorVal }}>To Do List</h1>
+          <br />
+          <input type="text" placeholder="Add a item" value={getInput} onChange={inputValue}/>
+          <button onClick={showItems}> + </button>
+          <ol>
+          { showValue.map(
+              (arr, curr) => {
+                return <ToDoList 
+                          id = {curr}
+                          key = {curr}
+                          list = {arr}
+                          onSelect = {deleteItem}
+                        />
+              }
+            )
+            }
+            
+          </ol>
+        </div>
+      </div>
+    </>
+  )
 }
 
 export default App;
+    
